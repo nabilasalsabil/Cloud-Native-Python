@@ -4,6 +4,10 @@ from flask import make_response
 from flask import request
 from flask import abort
 from flask import url_for
+from flask import render_template
+from flask_cors import CORS, cross_origin
+from flask import redirect
+from flask import session
 from time import gmtime
 from time import strftime
 import json
@@ -11,6 +15,8 @@ import sqlite3
 
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
+app.secret_key = 'F12Zr47j\3yX R~X@H!jmM]Lwf/,?KT'
+CORS(app)
 
 @app.route("/api/v1/info")
 def home_index():
@@ -233,6 +239,41 @@ def list_tweet(user_id):
 
     conn.close()
     return jsonify(user)
+
+@app.route('/adduser')
+def adduser():
+  return render_template('adduser.html')
+
+@app.route('/addtweets')
+def addtweetjs():
+  return render_template('addtweets.html')
+
+@app.route('/')
+def main():
+  return render_template('main.html')
+
+@app.route('/addname')
+def addname():
+  if request.args.get('yourname'):
+    session['name'] = request.args.get('yourname')
+    # And then redirect the user to the main page
+    return redirect(url_for('main'))
+  else:
+    return render_template('addname.html', session=session)
+
+@app.route('/clear')
+def clearsession():
+  # Clear the session
+  session.clear()
+  # Redirect the user to the main page
+  return redirect(url_for('main'))
+
+@app.route('/set_cookie')
+def cookie_insertion():
+  redirect_to_main = redirect('/')
+  response = current_app.make_response(redirect_to_main)
+  response.set_cookie('cookie_name', value='values')
+  return response
 
 if __name__ == "__main__":
   app.run(host='0.0.0.0', port=5000, debug=True)
