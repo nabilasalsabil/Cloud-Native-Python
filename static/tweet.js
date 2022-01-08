@@ -1,8 +1,8 @@
 function Tweet(data){
     this.id = ko.observable(data.id);
-    this.username = ko.observable(data["Tweet By"]);
-    this.body = ko.observable(data.Body);
-    this.timestamp = ko.observable(data.Timestamp);
+    this.username = ko.observable(data.tweetedby);
+    this.body = ko.observable(data.body);
+    this.timestamp = ko.observable(data.timestamp);
 }
 
 function TweetListViewModel() {
